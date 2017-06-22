@@ -1,0 +1,31 @@
+<h1>WP Challenge!!!</h1>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<%= form_tag("/welcome", method: "post", class: "form-group") do %>
+  <%= label_tag(:p1name, "Person name:") %>
+  <%= text_field_tag(:p1name) %>
+  <%= label_tag(:p1city, "City:") %>
+  <%= text_field_tag(:p1city) %>
+  <%= label_tag(:p1statecode, "State code:") %>
+  <%= text_field_tag(:p1statecode) %>
+
+    <%= label_tag(:p2name, "Person name:") %>
+    <%= text_field_tag(:p2name) %>
+    <%= label_tag(:p2city, "City:") %>
+    <%= text_field_tag(:p2city) %>
+    <%= label_tag(:p2statecode, "State code:") %>
+    <%= text_field_tag(:p2statecode) %>
+
+  <%= submit_tag("Search") %>
+<% end %>
+
+<% if @result %>
+    <p><%= simple_format(@result) %></p>
+<% end %>
