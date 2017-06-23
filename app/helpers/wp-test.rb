@@ -53,24 +53,6 @@ module WpTest
 
   def get_relation(p1_name, p1_city, p1_state_code, p2_name, p2_city, p2_state_code)
 
-=begin
-   from_name = "Alexander Algard"
-     from_city = "Seattle"
-     from_state_code = "WA"
-     to_name = "Toni Mccormick"
-     to_city = "Seattle"
-     to_state_code = "WA"
-
-      from_name = "Coy Baker"
-      from_city = "Quincy"
-      from_state_code = "IN"
-      to_name = "Alejandro Gonzalez"
-      to_city = "Frankfort"
-      to_state_code = "IN"
-
-=end
-
-
       from_name = p1_name
       from_city = p1_city
       from_state_code = p1_state_code
@@ -96,15 +78,6 @@ module WpTest
       while !queue.empty?() do
           current_node = queue.pop
           puts "dequeued #{current_node[:id]}"
-          if (current_node[:id].eql?("Person.27936cd5-1b64-4711-8766-766c7c17c58a.Durable"))
-            puts "dequeued for bp"
-          end
-          if (current_node[:id].eql?("Person.8a0ae22e-4004-43ba-8e22-7556366ff3de.Durable"))
-            puts "break here"
-          end
-          if (current_node[:id].eql?("Location.7f767260-f1b5-402a-b50b-bc6a7dd63587.Durable"))
-            puts "break here for Location.7f767260-f1b5-402a-b50b-bc6a7dd63587.Durable"
-          end
           if (set.include?(current_node[:id]))
             next
           end
@@ -117,6 +90,7 @@ module WpTest
             puts "loading #{current_node}"
             current_node[:entity] = load_from_api(
               current_node[:node_type], current_node[:id])
+            current_node[:loaded] = true
           end
           if (current_node[:node_type].eql?("person"))
             if (to_person_ids.include?(current_node[:id]))
@@ -130,6 +104,7 @@ module WpTest
                       if (set.include?(associated_person[:id]))
                         next
                       end
+                      associated_person_id = associated_person[:id]
                       puts "associated person is #{associated_person}"
                       new_node = Hash.new
                       new_node[:node_type] = "person"
@@ -138,9 +113,16 @@ module WpTest
                       new_node[:path] = Array.new(current_node[:path])
                       new_node[:path] << new_node
                       new_node[:loaded] = false
+                      if (to_person_ids.include?(associated_person_id))
+                        path_found = new_node[:path]
+                        break
+                      end
                       puts "enqueuing associated person #{associated_person[:id]}"
                       queue << new_node
                   end
+              end
+              if (!path_found.empty?)
+                break
               end
               addresses = Array.new
               if (!current_person[:current_addresses].nil?)
@@ -157,9 +139,6 @@ module WpTest
 
                 current_person[:results].each do |person_result|
                   if (!person_result[:locations].nil?)
-#                  if (!current_person[:locations].nil?)
-#                    addresses << current_person[:locations]
-
                     addresses << person_result[:locations]
                   end
                 end
@@ -273,7 +252,6 @@ module WpTest
       path_found.each_with_index do |path_element, index|
         puts "#{path_element[:id]}"
         if (index == 0)
-          #ret_str = "#{path_element[:entity][:name]}"
           prev_entity_str = "#{path_element[:entity][:name]}"
           prev_entity = path_element
           next
@@ -296,22 +274,25 @@ module WpTest
         end
 
         if (path_element[:node_type].eql?("person"))
-          if (prev_entity[:node_type].eql?("location") )
+          person_name = ""
+          if (path_element[:loaded])
             person_name = path_element[:entity][:results][0][:names][0][:first_name] + " " + path_element[:entity][:results][0][:names][0][:last_name]
+          else
+            person_name = path_element[:entity][:name]
+          end
+          if (prev_entity[:node_type].eql?("location") )
             ret_str = ret_str + person_name + " lives at " + prev_entity_str + "\n"
             prev_entity_str = person_name
             prev_entity = path_element
             next
           end
           if (prev_entity[:node_type].eql?("person"))
-            person_name = path_element[:entity][:results][0][:names][0][:first_name] + " " + path_element[:entity][:results][0][:names][0][:last_name]
             ret_str = ret_str + prev_entity_str + " is associated to " + "#{person_name}\n"
             prev_entity = path_element
             prev_entity_str = person_name
             next
           end
           if (prev_entity[:node_type].eql?("phone") )
-            person_name = path_element[:entity][:results][0][:names][0][:first_name] + " " + path_element[:entity][:results][0][:names][0][:last_name]
             ret_str = ret_str + person_name + " has the phone number " + prev_entity_str + "\n"
             prev_entity_str = person_name
             prev_entity = path_element
@@ -322,29 +303,6 @@ module WpTest
       end
 
     return ret_str
-=begin
-
-      while (!path_found.empty?)
-        path_element = path_found.pop
-        puts "#{path_element[:id]}"
-      end
-
-
-    from_person_search_request = $wp_base_30 + "person.json?" + $api_key +
-    "&name=" + (from_name.sub ' ','+') + "&address.city=" + from_city +
-      "&address.state_code=" + from_state_code
-      puts "#{from_person_search_request}"
-      from_person_search_response = RestClient.get from_person_search_request
-      from_person_json = JSON.parse(from_person_search_response.body)
-      from_person_json["person"].each do |person|
-          puts"#{person['id']}"
-          puts "#{person['current_addresses']}"
-      end
-=end
-
-
-  #	response = RestClient.get 'http://www.google.com'
-  #	puts "#{response.code}"
   end
 
 end
