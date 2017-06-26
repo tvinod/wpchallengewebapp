@@ -179,8 +179,8 @@ module WpTest
                 puts "enqueuing address #{id}"
                 queue << new_node
               end
-              if (!current_person['phones'].nil?)
-                current_person['phones'].each do |phone|
+              if (!current_person[:phones].nil?)
+                current_person[:phones].each do |phone|
                   if (set.include?(phone[:id]))
                     next
                   end
@@ -229,22 +229,30 @@ module WpTest
 
           if (current_node[:node_type].eql?("phone"))
               phone_entity = current_node[:entity]
-              path_so_far = current_node[:path] << current_node[:entity]
-              belongs_to = phone_entity[:belongs_to]
-              belongs_to.each do |belongs_to_person|
-                if (set.include?(belongs_to_person[:id][:key]))
-                  next
+              if (!phone_entity[:results].nil? && !phone_entity[:results].empty?)
+                phone_entity[:results].compact!
+                phone_entity[:results].each do |phone_person_result|
+                  belongs_to = phone_person_result[:belongs_to]
+                  if (!belongs_to.nil?)
+                    belongs_to.each do |belongs_to_person|
+                      if (set.include?(belongs_to_person[:id][:key]))
+                        next
+                      end
+                      new_node = Hash.new
+                      new_node[:node_type] = "person"
+                      new_node[:id] = belongs_to_person[:id][:key]
+                      new_node[:entity] = belongs_to_person
+                      new_node[:path] = Array.new(current_node[:path])
+                      new_node[:path] << new_node
+                      new_node[:loaded] = false
+                      puts "enqueuing person #{new_node[:id]}"
+                      queue << new_node
+                    end
+
+                  end
                 end
-                new_node = Hash.new
-                new_node[:node_type] = "person"
-                new_node[:id] = belongs_to_person[:id][:key]
-                new_node[:entity] = belongs_to_person
-                new_node[:path] = Array.new(current_node[:path])
-                new_node[:path] << new_node
-                new_node[:loaded] = false
-                puts "enqueuing person #{new_node[:id]}"
-                queue << new_node
               end
+
           end
       end
 
