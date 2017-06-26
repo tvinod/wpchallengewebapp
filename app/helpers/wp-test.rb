@@ -45,7 +45,13 @@ module WpTest
   def load_from_api(node_type, id)
     url = $wp_base_22 + id + ".json?" + $api_key
     puts "calling rest endpoint #{url}"
-    ret_obj_response = RestClient.get url
+    ret_obj_response = nil
+    begin
+      ret_obj_response = RestClient.get url
+    rescue => e
+      puts "#{e.response}"
+      return nil
+    end
     ret_obj = JSON.parse(ret_obj_response, :symbolize_names => true)
     return ret_obj
   end
@@ -90,6 +96,9 @@ module WpTest
             puts "loading #{current_node}"
             current_node[:entity] = load_from_api(
               current_node[:node_type], current_node[:id])
+            if (current_node[:entity].nil?)
+              next
+            end
             current_node[:loaded] = true
           end
           if (current_node[:node_type].eql?("person"))
