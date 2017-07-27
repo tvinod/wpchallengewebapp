@@ -1,4 +1,3 @@
-<h1>WP Challenge!!!</h1>
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
@@ -8,24 +7,60 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-<%= form_tag("/welcome", method: "post", class: "form-group") do %>
-  <%= label_tag(:p1name, "Person name:") %>
-  <%= text_field_tag(:p1name) %>
-  <%= label_tag(:p1city, "City:") %>
-  <%= text_field_tag(:p1city) %>
-  <%= label_tag(:p1statecode, "State code:") %>
-  <%= text_field_tag(:p1statecode) %>
+<div id="main-container" class="container">
+  <form role="form", action="/welcome", method="post" id="searchForm" name="searchForm">
+    <div class="row">
+      <div class='col-sm-4'>
+        <div class="form-group">
+          <label for="p1name">Person name</label>
+          <input type="text" id="p1name" name="p1name" class="form-control" required/>
+        </div>
+      </div>
+      <div class='col-sm-4'>
+        <div class="form-group">
+          <label for="p1city">City name</label>
+          <input type="text" id="p1city" name="p1city" class="form-control" required/>
+        </div>
+      </div>
+      <div class='col-sm-4'>
+        <div class="form-group">
+          <label for="p1statecode">State code</label>
+          <input type="text" id="p1statecode" name="p1statecode" class="form-control" maxlength="2" required/>
+        </div>
+      </div>
+    </div>
 
-    <%= label_tag(:p2name, "Person name:") %>
-    <%= text_field_tag(:p2name) %>
-    <%= label_tag(:p2city, "City:") %>
-    <%= text_field_tag(:p2city) %>
-    <%= label_tag(:p2statecode, "State code:") %>
-    <%= text_field_tag(:p2statecode) %>
+    <div class="row">
+      <div class='col-sm-4'>
+        <div class="form-group">
+          <label for="p2name">Person name</label>
+          <input type="text" id="p2name" name="p2name" class="form-control" required/>
+        </div>
+      </div>
+      <div class='col-sm-4'>
+        <div class="form-group">
+          <label for="p2city">City name</label>
+          <input type="text" id="p2city" name="p2city" class="form-control" required/>
+        </div>
+      </div>
+      <div class='col-sm-4'>
+        <div class="form-group">
+          <label for="p2statecode">State code</label>
+          <input type="text" id="p2statecode" name="p2statecode" class="form-control" maxlength="2" required/>
+        </div>
+      </div>
+    </div>
 
-  <%= submit_tag("Search") %>
-<% end %>
+    <input type="submit" id="search" value="Search" />
+  </form>
+  <% if @result %>
+      <div class="card card-inverse card-primary mb-3 text-center">
+        <div class="card-block">
+          <h4 class="card-title">Results</h4>
+          <p class="card-text"><%= simple_format(@result) %></p>
+        </div>
+      </div>
+  <% end %>
 
-<% if @result %>
-    <p><%= simple_format(@result) %></p>
-<% end %>
+</div>
+

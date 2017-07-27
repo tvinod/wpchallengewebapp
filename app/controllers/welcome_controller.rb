@@ -1,7 +1,8 @@
-require 'wp-test'
+require 'wp_graph_search'
 
 class WelcomeController < ApplicationController
-  include WpTest
+  include WpGraphSearch
+  skip_before_action :verify_authenticity_token
   def index
 #  	render plain: params[:welcome].inspect
   end
@@ -15,10 +16,8 @@ class WelcomeController < ApplicationController
   end
 
   def query
-    str = my_test()
-    @result = str
-    @result = get_relation(params[:p1name], params[:p1city], params[:p1statecode],
-                 params[:p2name], params[:p2city], params[:p2statecode])
+    @result = get_connection_path(params[:p1name], params[:p1city], params[:p1statecode],
+                                  params[:p2name], params[:p2city], params[:p2statecode])
     render "welcome/index"
   end
 
