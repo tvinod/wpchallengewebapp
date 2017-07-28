@@ -41,3 +41,5 @@ Some examples -
 1. Entering the same person for both entries - (Rick Porter, Spencer, IN)
 2. Direct association - (Rick Porter, Spencer, IN) and (Cathy Barnhart, West Terre Haute, IN)
 3. Two degrees of separation through location - (Rick Porter, Spencer, IN) and (Ashley Carr, Mooresville, IN)
+4. Two degrees of separation through phone - (Ashley Carr, Mooresville, IN) and (Robert Carr, Greenwood, IN)
+5. Three degrees of separation - (Rick Porter, Spencer, IN) and (Robert Carr, Greenwood, IN)

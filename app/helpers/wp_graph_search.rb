@@ -6,7 +6,7 @@ $wp_base_30 = "http://proapi.whitepages.com/3.0/"
 $wp_base_22 = "http://proapi.whitepages.com/2.2/entity/"
 # $api_key = "api_key=c5ec1bbbc3394afb991ce53e1ad2c7c8"
 $api_key = ""
-$default_max_depth = 5
+$default_max_depth = 6
 
 module WpGraphSearch
 
@@ -194,22 +194,42 @@ module WpGraphSearch
           logger.debug "enqueuing address #{id}"
           queue << new_node
         end
+
+        phones = Array.new
         if (!current_person[:phones].nil?)
-          current_person[:phones].each do |phone|
-            if (set.include?(phone[:id]))
-              next
+          phones << current_person[:phones]
+        end
+
+        if (!current_person[:results].nil? && !current_person[:results].empty?)
+
+          current_person[:results].each do |person_result|
+            if (!person_result[:phones].nil?)
+              phones << person_result[:phones]
             end
-            logger.debug "phone is #{phone}"
-            new_node = Hash.new
-            new_node[:node_type] = "phone"
-            new_node[:id] = phone[:id]
-            new_node[:entity] = phone
-            new_node[:path] = Array.new(current_node[:path])
-            new_node[:path] << new_node
-            new_node[:loaded] = false
-            logger.debug "enqueuing phone #{phone[:id]}"
-            queue << new_node
           end
+        end
+        phones.flatten!
+        phones.each do |phone|
+          if (set.include?(phone[:id]))
+            next
+          end
+          logger.debug "phone is #{phone}"
+          id = nil
+          if (phone[:id].class != Hash)
+            id = phone[:id]
+          else
+            id = phone[:id][:key]
+          end
+
+          new_node = Hash.new
+          new_node[:node_type] = "phone"
+          new_node[:id] = id
+          new_node[:entity] = phone
+          new_node[:path] = Array.new(current_node[:path])
+          new_node[:path] << new_node
+          new_node[:loaded] = false
+          logger.debug "enqueuing phone #{id}"
+          queue << new_node
         end
       end
       if (current_node[:node_type].eql?("location"))
