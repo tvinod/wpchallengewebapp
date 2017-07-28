@@ -6,7 +6,8 @@ The application has been written in ruby on rails and uses bootstrap for the ui 
 
 Assumption - If the source person resolves to multiple person records in the whitepages system, the first person record is taken as the source node. Otherwise, this becomes a many to many graph traversal problem and that can lead high latencies for the user experience. 
 
-#Building Docker Container
+
+# Building Docker Container
 
 Run in the project directory - 
 
@@ -14,7 +15,7 @@ Run in the project directory -
 docker build . -t wp-graph-search
 ```
 
-#Running the application
+# Running the application
 
 ## Set the API key - 
 
