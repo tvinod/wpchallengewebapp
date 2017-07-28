@@ -40,5 +40,4 @@ Enter any 2 persons' name, city and state code and hit submit.
 Some examples -
 1. Entering the same person for both entries - (Rick Porter, Spencer, IN)
 2. Direct association - (Rick Porter, Spencer, IN) and (Cathy Barnhart, West Terre Haute, IN)
-2. Two degrees of separation through location - (Rick Porter, Spencer, IN) and (Ashley Carr, Mooresville, IN)
-3. 
+3. Two degrees of separation through location - (Rick Porter, Spencer, IN) and (Ashley Carr, Mooresville, IN)
